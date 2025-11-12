@@ -40,6 +40,16 @@ models_dict = model_utils.get_models()
 X_train, y_train = model_utils.get_training_data()
 scaler, feature_names = model_utils.get_scaler_and_features()
 
+import traceback
+
+def safe_render(func):
+    try:
+        func()
+    except Exception as e:
+        st.error(f"⚠️ Error: {e}")
+        st.code(traceback.format_exc())
+
+
 opcion = st.sidebar.radio(
     label="Selecciona una sección",  
     options=["Introducción", "EDA", "Machine Learning Models", "Predicción"],
@@ -75,12 +85,9 @@ if opcion == "Introducción":
     <b style="color:#1DB954;">Ana Paula Salomone</b>
     </p>
     """, unsafe_allow_html=True)
-
-elif opcion == "EDA":
-    eda.render()
-
-elif opcion == "Machine Learning Models":
-    machine_learning.render(models_dict, X_train, y_train)
-
+if opcion == "EDA":
+    safe_render(eda.render)
+elif opcion == "Machine Learning":
+    safe_render(lambda: machine_learning.render(models_dict, X_train, y_train))
 elif opcion == "Predicción":
-    prediction.render(models_dict, scaler, feature_names)
+    safe_render(lambda: prediction.render(models_dict, scaler, feature_names))
