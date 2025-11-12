@@ -42,10 +42,6 @@ scaler, feature_names = model_utils.get_scaler_and_features()
 
 import traceback
 
-st.sidebar.write("🐍 Python version:", sys.version)
-st.sidebar.write("📦 Installed packages:")
-st.sidebar.write({pkg.key: pkg.version for pkg in pkg_resources.working_set})
-
 def safe_render(func):
     try:
         func()
