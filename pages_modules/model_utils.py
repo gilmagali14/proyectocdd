@@ -32,27 +32,50 @@ YTRAIN_PATH = os.path.join(MODELS_DIR, "y_test.pkl")
 
 def safe_load(path, description="archivo"):
     if not os.path.exists(path):
+        st.warning(f"⚠️ {description} no encontrado en {path}")
         return None
     try:
-        return joblib.load(path)
-    except Exception:
+        obj = joblib.load(path)
+        st.success(f"✅ {description} cargado correctamente (joblib)")
+        return obj
+    except Exception as e1:
         try:
             with open(path, "rb") as f:
-                return pickle.load(f)
-        except Exception as e:
+                obj = pickle.load(f)
+                st.success(f"✅ {description} cargado correctamente (pickle)")
+                return obj
+        except Exception as e2:
+            st.error(f"❌ Error cargando {description}: {e2}")
             return None
 
 
 def load_all():
     global MODEL_1, MODEL_2, MODEL_3, scaler, feature_names, X_train, y_train
 
+    st.write("### 🧠 Cargando modelos...")
     MODEL_1 = safe_load(MODEL_1_PATH, "Modelo 1 (Logistic Regression)")
     MODEL_2 = safe_load(MODEL_2_PATH, "Modelo 2 (XGBoost)")
     MODEL_3 = safe_load(MODEL_3_PATH, "Modelo 3 (Random Forest)")
+
+    st.write("### ⚙️ Cargando scaler y datos de entrenamiento...")
     scaler = safe_load(SCALER_PATH, "Scaler")
     feature_names = safe_load(FEATURE_NAMES_PATH, "Feature Names")
     X_train = safe_load(XTRAIN_PATH, "X_train")
     y_train = safe_load(YTRAIN_PATH, "y_train")
+
+    # --- Diagnóstico adicional ---
+    st.write("### 🧾 Diagnóstico final:")
+    st.write({
+        "Logistic Regression": type(MODEL_1),
+        "XGBoost": type(MODEL_2),
+        "Random Forest": type(MODEL_3),
+        "Scaler": type(scaler),
+        "Feature Names": type(feature_names),
+        "X_train": type(X_train),
+        "y_train": type(y_train)
+    })
+    # ------------------------------
+
 
 def get_models():
     return {
