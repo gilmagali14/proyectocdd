@@ -2,11 +2,6 @@ import streamlit as st
 import os
 import sys
 import warnings
-import models  
-
-from pages_modules import eda, machine_learning, prediction, models
-
-warnings.filterwarnings("ignore")
 
 pages_modules_path = os.path.join(os.path.dirname(__file__), 'pages_modules')
 if pages_modules_path not in sys.path:
@@ -15,6 +10,10 @@ if pages_modules_path not in sys.path:
 utils_path = os.path.join(os.path.dirname(__file__), 'utils')
 if utils_path not in sys.path:
     sys.path.insert(0, utils_path)
+
+from pages_modules import eda, machine_learning, prediction, model_utils
+
+warnings.filterwarnings("ignore")
 
 with open("utils/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -25,11 +24,11 @@ st.set_page_config(
     layout="wide"
 )
 
-models.load_all()  
+model_utils.load_all()  
 
-models_dict = models.get_models()
-X_train, y_train = models.get_training_data()
-scaler, feature_names = models.get_scaler_and_features()
+models_dict = model_utils.get_models()
+X_train, y_train = model_utils.get_training_data()
+scaler, feature_names = model_utils.get_scaler_and_features()
 
 opcion = st.sidebar.radio(
     label="Selecciona una sección",  
