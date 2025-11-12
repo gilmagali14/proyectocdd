@@ -29,8 +29,6 @@ def render():
     if df.empty:
         return
 
-    # --- Sidebar: filtros globales ---
-    st.sidebar.header("⚙️ Configuración general")
     numeric_cols = df.select_dtypes(include=np.number).columns.tolist()
     categorical_cols = df.select_dtypes(exclude=np.number).columns.tolist()
 

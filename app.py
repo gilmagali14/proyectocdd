@@ -1,16 +1,16 @@
 import streamlit as st
-from pages import eda, machine_learning, prediction
-
-import sys
 import os
-
+import sys
 import warnings
+import models  
+
+from pages_modules import eda, machine_learning, prediction, models
+
 warnings.filterwarnings("ignore")
 
-
-pages_path = os.path.join(os.path.dirname(__file__), 'pages')
-if pages_path not in sys.path:
-    sys.path.insert(0, pages_path)
+pages_modules_path = os.path.join(os.path.dirname(__file__), 'pages_modules')
+if pages_modules_path not in sys.path:
+    sys.path.insert(0, pages_modules_path)
 
 utils_path = os.path.join(os.path.dirname(__file__), 'utils')
 if utils_path not in sys.path:
@@ -25,26 +25,16 @@ st.set_page_config(
     layout="wide"
 )
 
-from models import (
-    get_model_1, get_model_2, get_model_3,
-    scaler, feature_names, load_all_models
-)
+models.load_all()  
 
-@st.cache_resource
-def load_models_once():
-    load_all_models()
-    return {
-        "Logistic Regression": get_model_1(),
-        "XGBoost": get_model_2(),
-        "Random Forest": get_model_3(),
-    }
-
-models = load_models_once()
+models_dict = models.get_models()
+X_train, y_train = models.get_training_data()
+scaler, feature_names = models.get_scaler_and_features()
 
 opcion = st.sidebar.radio(
-    label="Selecciona un modelo",  # ✅ obligatorio: label no vacío
-    options= ["Introducción", "EDA", "Machine Learning Models", "Predicción"],
-    label_visibility="hidden"  # 👈 oculta visualmente el label si no lo quieres mostrar
+    label="Selecciona una sección",  
+    options=["Introducción", "EDA", "Machine Learning Models", "Predicción"],
+    label_visibility="hidden"
 )
 
 if opcion == "Introducción":
@@ -58,7 +48,7 @@ if opcion == "Introducción":
     </div>
     <hr style="border: 1px solid #1DB954;">
     <h2 style="color:#1DB954;">¿Qué vamos a predecir?</h2>
-    <p>En este proyecto desarrollaremos un modelo de <b>Machine Learning</b> capaz de
+    <p>En este proyecto desarrollamos un modelo de <b>Machine Learning</b> capaz de
     predecir si una canción es popular o no (<code>spotify_artist_popularity</code>), 
     utilizando tanto sus características musicales como la información del artista.</p>
     <ul>
@@ -81,7 +71,7 @@ elif opcion == "EDA":
     eda.render()
 
 elif opcion == "Machine Learning Models":
-    machine_learning.render(models)
+    machine_learning.render(models_dict, X_train, y_train)
 
 elif opcion == "Predicción":
-    prediction.render(models, scaler, feature_names)
+    prediction.render(models_dict, scaler, feature_names)
