@@ -24,6 +24,16 @@ st.set_page_config(
     layout="wide"
 )
 
+
+# --- Debug temporal para Streamlit Cloud ---
+st.write("📂 Archivos dentro de /models:")
+try:
+    files = os.listdir("models")
+    st.write(files)
+except Exception as e:
+    st.error(f"No se pudo listar la carpeta models: {e}")
+# -------------------------------------------
+
 model_utils.load_all()  
 
 models_dict = model_utils.get_models()
