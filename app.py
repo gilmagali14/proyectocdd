@@ -85,9 +85,9 @@ if opcion == "Introducción":
     <b style="color:#1DB954;">Ana Paula Salomone</b>
     </p>
     """, unsafe_allow_html=True)
-if opcion == "EDA":
-    safe_render(eda.render)
-elif opcion == "Machine Learning":
+elif opcion == "EDA":
+    safe_render(lambda: eda.render())
+elif opcion == "Machine Learning Models":
     safe_render(lambda: machine_learning.render(models_dict, X_train, y_train))
 elif opcion == "Predicción":
     safe_render(lambda: prediction.render(models_dict, scaler, feature_names))
